@@ -329,26 +329,60 @@ function initCakeCandles() {
 }
 
 /* ----------------------------------------------------
- * 5. WAX-SEALED SECRET LETTER
+ * 5. WAX-SEALED SECRET LETTER (Mobile Optimized)
  * ---------------------------------------------------- */
 function initEnvelope() {
   const waxSeal = document.getElementById('waxSeal');
   const letterModal = document.getElementById('letterModal');
-  const closeLetter = document.getElementById('closeLetter');
+  const closeButtons = document.querySelectorAll('.close-letter-btn, #closeLetter, #closeLetterBottom');
+
+  function openLetter(e) {
+    if (e) e.preventDefault();
+    playChimeSound();
+    if (letterModal) {
+      letterModal.classList.remove('hidden');
+      letterModal.scrollTop = 0;
+    }
+    document.body.style.overflow = 'hidden'; // Lock background scroll on mobile
+    triggerHeartConfetti();
+  }
+
+  function closeLetter(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (letterModal) {
+      letterModal.classList.add('hidden');
+    }
+    document.body.style.overflow = ''; // Restore scroll
+  }
 
   if (waxSeal && letterModal) {
-    waxSeal.addEventListener('click', () => {
-      playChimeSound();
-      letterModal.classList.remove('hidden');
-      triggerHeartConfetti();
+    waxSeal.addEventListener('click', openLetter);
+    waxSeal.addEventListener('touchend', openLetter);
+  }
+
+  closeButtons.forEach((btn) => {
+    btn.addEventListener('click', closeLetter);
+    btn.addEventListener('touchend', closeLetter);
+  });
+
+  // Tap anywhere outside the letter paper on the backdrop to close
+  if (letterModal) {
+    letterModal.addEventListener('click', (e) => {
+      if (e.target === letterModal) {
+        closeLetter(e);
+      }
     });
   }
 
-  if (closeLetter && letterModal) {
-    closeLetter.addEventListener('click', () => {
-      letterModal.classList.add('hidden');
-    });
-  }
+  // Escape key support
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && letterModal && !letterModal.classList.contains('hidden')) {
+      closeLetter(e);
+    }
+  });
 }
 
 /* ----------------------------------------------------
@@ -369,8 +403,8 @@ function initFlipCards() {
 function initClickHearts() {
   const icons = ['❤️', '💖', '✨', '🌸', '💐'];
   document.addEventListener('click', (e) => {
-    // Avoid triggering when clicking buttons or links
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('#waxSeal') || e.target.closest('#cakeArea')) {
+    // Avoid triggering when clicking buttons, links, or modals
+    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('#waxSeal') || e.target.closest('#cakeArea') || e.target.closest('#letterModal') || e.target.closest('#imageLightbox')) {
       return;
     }
 
@@ -386,39 +420,55 @@ function initClickHearts() {
 }
 
 /* ----------------------------------------------------
- * 8. IMAGE LIGHTBOX
+ * 8. IMAGE LIGHTBOX (Mobile Optimized)
  * ---------------------------------------------------- */
 function initLightbox() {
   const lightbox = document.getElementById('imageLightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxCaption = document.getElementById('lightboxCaption');
-  const closeBtn = document.getElementById('closeLightbox');
+  const closeBtns = document.querySelectorAll('#closeLightbox, #closeLightboxBottom');
 
   if (!lightbox || !lightboxImg) return;
 
-  document.querySelectorAll('.zoomable-img').forEach((img) => {
-    img.style.cursor = 'zoom-in';
-    img.addEventListener('click', () => {
-      lightboxImg.src = img.src;
-      if (lightboxCaption) {
-        lightboxCaption.textContent = img.dataset.caption || img.alt || '';
-      }
-      lightbox.classList.remove('hidden');
-      lightbox.classList.add('flex');
-    });
-  });
-
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      lightbox.classList.add('hidden');
-      lightbox.classList.remove('flex');
-    });
+  function openLightbox(img) {
+    lightboxImg.src = img.src;
+    if (lightboxCaption) {
+      lightboxCaption.textContent = img.dataset.caption || img.alt || '';
+    }
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
   }
 
+  function closeLightbox(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.zoomable-img').forEach((img) => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => openLightbox(img));
+  });
+
+  closeBtns.forEach((btn) => {
+    btn.addEventListener('click', closeLightbox);
+    btn.addEventListener('touchend', closeLightbox);
+  });
+
   lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) {
-      lightbox.classList.add('hidden');
-      lightbox.classList.remove('flex');
+    if (e.target === lightbox || e.target === lightboxImg) {
+      closeLightbox(e);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
+      closeLightbox(e);
     }
   });
 }

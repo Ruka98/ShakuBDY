@@ -585,22 +585,27 @@
   <!-- ====================================================
        LETTER MODAL (Slides in when seal is tapped)
        ==================================================== -->
-  <div id="letterModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-    <div class="relative w-full max-w-xl my-8 letter-paper rounded-2xl p-8 sm:p-12 shadow-2xl text-left border border-amber-200">
+  <div id="letterModal" class="hidden fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md overflow-y-auto">
+    <div class="relative w-full max-w-xl my-4 sm:my-8 letter-paper rounded-2xl p-5 sm:p-12 shadow-2xl text-left border border-amber-200">
       
-      <!-- Close Button -->
-      <button id="closeLetter" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-700 flex items-center justify-center font-bold text-lg transition active:scale-90" title="Close letter">
-        &times;
-      </button>
+      <!-- Top Header & Close Button for Mobile -->
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-amber-200/80">
+        <span class="font-cinzel text-[11px] sm:text-xs tracking-widest text-amber-900 uppercase font-semibold">A Letter From The Heart</span>
+        
+        <!-- Prominent touch-friendly close button -->
+        <button id="closeLetter" class="close-letter-btn px-3.5 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-medium text-xs shadow-md transition-transform flex items-center gap-1.5 cursor-pointer" aria-label="Close letter">
+          <span class="text-base font-bold leading-none">&times;</span>
+          <span>Close</span>
+        </button>
+      </div>
 
       <!-- Letter Header -->
-      <div class="text-center pb-6 mb-6 border-b border-amber-200/80">
-        <span class="font-cinzel text-xs tracking-widest text-amber-800 uppercase font-semibold block mb-1">A Letter From The Heart</span>
-        <h3 class="font-script text-4xl sm:text-5xl text-rose-800">My Dearest Shakuni,</h3>
+      <div class="text-center pb-4 mb-4">
+        <h3 class="font-script text-3xl sm:text-5xl text-rose-800">My Dearest Shakuni,</h3>
       </div>
 
       <!-- Letter Body Text -->
-      <div class="text-gray-800 text-base sm:text-lg leading-relaxed space-y-4 font-light">
+      <div class="text-gray-800 text-sm sm:text-lg leading-relaxed space-y-4 font-light">
         <p>
           From the day you walked into my life, everything became brighter, warmer, and so much more meaningful.
         </p>
@@ -615,10 +620,17 @@
         </p>
       </div>
 
-      <!-- Letter Signoff -->
-      <div class="mt-8 pt-6 border-t border-amber-200/80 text-right">
-        <p class="font-script text-3xl text-rose-700 mb-1">With all my love,</p>
-        <p class="font-serif-title font-bold text-gray-900 text-lg">Rukmal ❤️</p>
+      <!-- Letter Signoff & Mobile Bottom Close Button -->
+      <div class="mt-6 pt-5 border-t border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-center sm:text-left w-full sm:w-auto">
+          <p class="font-script text-2xl sm:text-3xl text-rose-700 mb-0.5">With all my love,</p>
+          <p class="font-serif-title font-bold text-gray-900 text-base sm:text-lg">Rukmal ❤️</p>
+        </div>
+        
+        <!-- Big mobile-friendly bottom close button -->
+        <button id="closeLetterBottom" class="close-letter-btn w-full sm:w-auto px-5 py-3 rounded-full bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-semibold text-xs sm:text-sm shadow-md transition-transform flex items-center justify-center gap-2 cursor-pointer">
+          <span>💌 Close Letter & Continue</span>
+        </button>
       </div>
 
     </div>
@@ -628,11 +640,12 @@
   <!-- ====================================================
        IMAGE LIGHTBOX (Zooms photos when tapped)
        ==================================================== -->
-  <div id="imageLightbox" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <button id="closeLightbox" class="absolute top-5 right-5 text-white/80 hover:text-white text-3xl font-light w-10 h-10 flex items-center justify-center rounded-full bg-white/10">&times;</button>
+  <div id="imageLightbox" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <button id="closeLightbox" class="absolute top-4 right-4 text-white hover:text-rose-300 text-3xl font-light w-12 h-12 flex items-center justify-center rounded-full bg-white/20 active:scale-95 transition-transform cursor-pointer" aria-label="Close photo">&times;</button>
     <div class="max-w-3xl max-h-[85vh] flex flex-col items-center">
       <img id="lightboxImg" src="" alt="Zoomed view" class="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl">
       <p id="lightboxCaption" class="text-white/90 font-light text-sm sm:text-base mt-4 text-center max-w-lg font-script text-2xl text-rose-300"></p>
+      <button id="closeLightboxBottom" class="mt-4 px-5 py-2 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-semibold sm:hidden active:scale-95 cursor-pointer">Tap anywhere to close</button>
     </div>
   </div>
 
