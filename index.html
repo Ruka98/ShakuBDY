@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Happy Birthday, Shakuni! ❤️ | A Special Surprise</title>
+  
+  <!-- Open Graph metadata for WhatsApp & Social Sharing -->
+  <meta property="og:title" content="Happy Birthday, Shakuni! ✨">
+  <meta property="og:description" content="A special birthday surprise crafted with love, just for you. Tap to unwrap your gift! 🎁">
+  <meta property="og:image" content="assets/images/shakuni-portrait-sunlight.jpg">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rose: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              400: '#fb7185',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+              900: '#881337',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen relative selection:bg-rose-200 selection:text-rose-900">
+
+  <!-- Optional Background Audio Element (Drop any music.mp3 into assets/ to replace synth) -->
+  <audio id="bgMusic" loop preload="auto" src="assets/music.mp3"></audio>
+
+  <!-- Ambient Falling Petals & Hearts Canvas -->
+  <canvas id="ambientCanvas"></canvas>
+
+  <!-- Floating Audio Equalizer Control (Fixed Top-Right) -->
+  <div class="fixed top-4 right-4 z-50">
+    <button id="musicToggle" class="sound-paused flex items-center gap-2.5 px-4 py-2 rounded-full glass-card border border-rose-200 shadow-lg text-rose-700 hover:text-rose-900 active:scale-95 transition-all text-xs font-semibold" title="Toggle background music">
+      <div class="flex items-end gap-0.5 h-4">
+        <span class="sound-bar"></span>
+        <span class="sound-bar"></span>
+        <span class="sound-bar"></span>
+        <span class="sound-bar"></span>
+      </div>
+      <span id="soundStatus">Music: Off</span>
+    </button>
+  </div>
+
+  <!-- ====================================================
+       1. THE UNBOX GIFT OVERLAY (First Screen She Sees)
+       ==================================================== -->
+  <div id="giftModal" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center" style="background: radial-gradient(circle at center, #2e0827 0%, #170417 60%, #0c020e 100%);">
+    
+    <!-- Background Twinkling Glow -->
+    <div class="absolute w-80 h-80 rounded-full bg-rose-600/20 blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-md w-full flex flex-col items-center">
+      
+      <!-- Gift Box Animation Container -->
+      <div class="gift-box-anim mb-8 cursor-pointer transform hover:scale-105 transition-transform" id="giftBoxVisual">
+        <div class="relative w-36 h-36 mx-auto">
+          <!-- Gift Ribbon Glow -->
+          <div class="absolute inset-0 bg-gradient-to-r from-rose-500 to-amber-400 rounded-3xl blur-lg opacity-40 animate-pulse"></div>
+          
+          <!-- Box Body -->
+          <div class="relative w-full h-full bg-gradient-to-br from-rose-500 via-rose-600 to-rose-700 rounded-3xl shadow-2xl flex items-center justify-center border border-rose-400/40">
+            <!-- Vertical Ribbon -->
+            <div class="absolute w-7 h-full bg-gradient-to-b from-amber-200 via-amber-300 to-amber-400 shadow-md"></div>
+            <!-- Horizontal Ribbon -->
+            <div class="absolute h-7 w-full bg-gradient-to-r from-amber-200 via-amber-300 to-amber-400 shadow-md"></div>
+            <!-- Ribbon Bow on Top -->
+            <div class="absolute -top-5 flex items-center justify-center z-20">
+              <div class="w-8 h-8 rounded-full border-4 border-amber-300 transform -rotate-45 shadow-lg bg-amber-400/30"></div>
+              <div class="w-8 h-8 rounded-full border-4 border-amber-300 transform rotate-45 -ml-3 shadow-lg bg-amber-400/30"></div>
+            </div>
+            <!-- Center Sparkle -->
+            <div class="z-20 text-3xl">✨</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heading & Welcome Notes -->
+      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase bg-rose-950/80 text-rose-300 border border-rose-500/30 mb-3 shadow-inner">
+        A Special Surprise Just For You
+      </span>
+
+      <h1 class="font-serif-title text-4xl sm:text-5xl text-white font-bold tracking-wide mb-3 leading-tight">
+        Happy Birthday, <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-amber-200 font-script text-5xl sm:text-6xl">Shakuni</span>
+      </h1>
+
+      <p class="text-rose-200/80 text-sm sm:text-base max-w-sm mb-8 leading-relaxed font-light">
+        A personal gift made with code, memories, and love. Tap the button below to unwrap your special birthday surprise.
+      </p>
+
+      <!-- Unwrap CTA Button -->
+      <button id="unwrapBtn" class="group relative px-8 py-4 rounded-full font-semibold text-white bg-gradient-to-r from-rose-500 via-pink-600 to-rose-600 shadow-xl shadow-rose-600/40 hover:shadow-rose-500/60 active:scale-95 transition-all text-base sm:text-lg flex items-center gap-3">
+        <span>🎁 Tap to Unwrap Your Gift</span>
+        <span class="group-hover:translate-x-1 transition-transform">✨</span>
+      </button>
+
+      <p class="text-xs text-rose-300/50 mt-5 font-light">
+        (Tip: Turn your volume up for the best experience 🎶)
+      </p>
+    </div>
+  </div>
+
+
+  <!-- ====================================================
+       2. MAIN STORYBOOK CONTENT (Revealed After Unwrapping)
+       ==================================================== -->
+  <main id="mainContent" class="hidden min-h-screen pb-28">
+
+    <!-- HERO SECTION -->
+    <header class="relative pt-20 pb-14 px-6 text-center bg-rose-radial overflow-hidden">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-semibold tracking-wider uppercase mb-4 border border-rose-200 shadow-sm">
+          <span>🌸</span> Celebrating Your Special Day
+        </div>
+        
+        <h1 class="font-serif-title text-4xl sm:text-6xl text-gray-900 font-bold tracking-tight mb-4">
+          Happy Birthday, <span class="text-rose-600 font-script block sm:inline text-5xl sm:text-7xl">Shakuni</span> ❤️
+        </h1>
+
+        <p class="text-gray-600 max-w-xl mx-auto text-base sm:text-lg leading-relaxed font-light mb-8">
+          To the girl whose smile brightens my entire world, today is dedicated to celebrating the brilliant, beautiful, and inspiring person you are.
+        </p>
+
+        <!-- Quick Jump Navigation Pills -->
+        <div class="flex flex-wrap justify-center gap-2 sm:gap-3 text-xs sm:text-sm">
+          <a href="#portraits" class="px-4 py-2 rounded-full glass-card hover:bg-rose-50 border border-rose-200 text-gray-700 transition shadow-sm font-medium">✨ The Radiant You</a>
+          <a href="#convocation" class="px-4 py-2 rounded-full glass-card hover:bg-rose-50 border border-rose-200 text-gray-700 transition shadow-sm font-medium">🎓 Your Achievements</a>
+          <a href="#memories" class="px-4 py-2 rounded-full glass-card hover:bg-rose-50 border border-rose-200 text-gray-700 transition shadow-sm font-medium">💖 Our Moments</a>
+          <a href="#birthday-cake" class="px-4 py-2 rounded-full glass-card hover:bg-rose-50 border border-rose-200 text-gray-700 transition shadow-sm font-medium">🎂 Make a Wish</a>
+          <a href="#secret-letter" class="px-4 py-2 rounded-full glass-card hover:bg-rose-50 border border-rose-200 text-gray-700 transition shadow-sm font-medium">💌 Secret Letter</a>
+        </div>
+      </div>
+    </header>
+
+
+    <!-- ====================================================
+         CHAPTER 1: THE RADIANT YOU (Her Solo Portraits)
+         ==================================================== -->
+    <section id="portraits" class="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-rose-500 font-cinzel text-xs uppercase tracking-widest block mb-2 font-bold">Chapter I</span>
+        <h2 class="font-serif-title text-3xl sm:text-4xl font-bold text-gray-900 mb-3">The Radiant You</h2>
+        <p class="text-gray-600 max-w-md mx-auto text-sm sm:text-base font-light">
+          A warmth and beauty that lights up every room effortlessly.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
+        
+        <!-- Portrait 1 -->
+        <div class="polaroid-card rotate-[-2deg] hover:rotate-0">
+          <div class="tape-top"></div>
+          <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[4/5]">
+            <img src="assets/images/shakuni-portrait-sunlight.jpg" alt="Shakuni smiling in daylight" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="Sunshine and that sweet, effortless smile that brightens any day.">
+          </div>
+          <div class="mt-4 text-center">
+            <p class="font-script text-2xl text-rose-700">Pure Sunshine ✨</p>
+            <p class="text-xs text-gray-500 font-light mt-1">That bright, genuine smile that melts my heart every single time.</p>
+          </div>
+        </div>
+
+        <!-- Portrait 2 -->
+        <div class="polaroid-card rotate-[1.5deg] hover:rotate-0 md:-translate-y-4">
+          <div class="tape-top"></div>
+          <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[4/5]">
+            <img src="assets/images/shakuni-portrait-green.jpg" alt="Shakuni close up portrait" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="Endless charm, warmth, and grace in your eyes.">
+          </div>
+          <div class="mt-4 text-center">
+            <p class="font-script text-2xl text-rose-700">Sweet & Graceful 🌸</p>
+            <p class="text-xs text-gray-500 font-light mt-1">The warmth in your eyes and the gentle kindness you share.</p>
+          </div>
+        </div>
+
+        <!-- Portrait 3 -->
+        <div class="polaroid-card rotate-[-1deg] hover:rotate-0">
+          <div class="tape-top"></div>
+          <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[4/5]">
+            <img src="assets/images/shakuni-portrait-pink.jpg" alt="Shakuni in traditional pink saree" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="Classic elegance and unmatched beauty in pink saree.">
+          </div>
+          <div class="mt-4 text-center">
+            <p class="font-script text-2xl text-rose-700">Timeless Elegance 💖</p>
+            <p class="text-xs text-gray-500 font-light mt-1">Stunning in every single frame, effortlessly and naturally.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====================================================
+         CHAPTER 2: HER ACHIEVEMENTS & CONVOCATION
+         ==================================================== -->
+    <section id="convocation" class="py-16 px-4 sm:px-6 bg-gradient-to-b from-rose-50/60 to-white">
+      <div class="max-w-5xl mx-auto">
+        
+        <div class="text-center mb-12">
+          <span class="text-rose-500 font-cinzel text-xs uppercase tracking-widest block mb-2 font-bold">Chapter II</span>
+          <h2 class="font-serif-title text-3xl sm:text-4xl font-bold text-gray-900 mb-3">The Achiever & Our Pride</h2>
+          <p class="text-gray-600 max-w-lg mx-auto text-sm sm:text-base font-light">
+            University of Ruhuna Convocation — Celebrating your brilliance, dedication, and monumental milestones.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          
+          <!-- Image 1: With Convocation Book & Garland -->
+          <div class="polaroid-card rotate-[-1.5deg] hover:rotate-0">
+            <div class="tape-top"></div>
+            <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[3/4]">
+              <img src="assets/images/shakuni-graduation-cert.jpg" alt="University of Ruhuna Convocation" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="University of Ruhuna Convocation — A proud milestone accomplished!">
+            </div>
+            <div class="mt-3 text-center">
+              <p class="font-script text-2xl text-rose-800">University of Ruhuna 🎓</p>
+              <p class="text-xs text-gray-500 font-light mt-1">All the late nights, dedication, and passion brought you to this proud moment.</p>
+            </div>
+          </div>
+
+          <!-- Image 2: With Cap & Bouquet + Heartfelt Note -->
+          <div class="flex flex-col gap-6">
+            <div class="polaroid-card rotate-[2deg] hover:rotate-0">
+              <div class="tape-top"></div>
+              <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[3/4]">
+                <img src="assets/images/shakuni-graduation-bouquet.jpg" alt="Shakuni graduation bouquet and bears" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="Graduation day with teddy bears and floral bouquet!">
+              </div>
+              <div class="mt-3 text-center">
+                <p class="font-script text-2xl text-rose-800">So Incredibly Proud of You 🌟</p>
+                <p class="text-xs text-gray-500 font-light mt-1">Watching you succeed is one of my greatest joys in life.</p>
+              </div>
+            </div>
+
+            <!-- Quote Card -->
+            <div class="glass-card p-6 rounded-2xl border border-rose-200">
+              <div class="flex items-center gap-3 mb-2 text-rose-600">
+                <span class="text-xl">🎓</span>
+                <span class="font-cinzel text-xs tracking-wider uppercase font-semibold">Inspiring Milestone</span>
+              </div>
+              <p class="text-gray-700 text-sm sm:text-base italic leading-relaxed font-light">
+                "Your intellect, determination, and big dreams inspire me constantly. You’ve proved that anything you set your mind to, you achieve with pure grace. May this new year open even bigger doors for you!"
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====================================================
+         CHAPTER 3: OUR FAVORITE MOMENTS (Together)
+         ==================================================== -->
+    <section id="memories" class="py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-rose-500 font-cinzel text-xs uppercase tracking-widest block mb-2 font-bold">Chapter III</span>
+        <h2 class="font-serif-title text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Us, Hand in Hand</h2>
+        <p class="text-gray-600 max-w-md mx-auto text-sm sm:text-base font-light">
+          The sweetest celebrations and memories we treasure.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Couple with Flower Bouquet -->
+        <div class="polaroid-card rotate-[-1.5deg] hover:rotate-0">
+          <div class="tape-top"></div>
+          <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[4/3]">
+            <img src="assets/images/couple-flowers.jpg" alt="Couple holding flower bouquet" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="Together with flowers and smiles that light up our days.">
+          </div>
+          <div class="mt-4 text-center">
+            <p class="font-script text-2xl text-rose-700">Flowers For You 💐</p>
+            <p class="text-xs text-gray-500 font-light mt-1">Every moment by your side is a celebration of love and happiness.</p>
+          </div>
+        </div>
+
+        <!-- Birthday on Couch -->
+        <div class="polaroid-card rotate-[2deg] hover:rotate-0">
+          <div class="tape-top"></div>
+          <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[3/4]">
+            <img src="assets/images/birthday-couch.jpg" alt="Sitting on couch under Happy Birthday banner" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="Happy Birthday celebrations together on the couch.">
+          </div>
+          <div class="mt-4 text-center">
+            <p class="font-script text-2xl text-rose-700">Happy Birthday Moments 🥂</p>
+            <p class="text-xs text-gray-500 font-light mt-1">Under the banner, sharing smiles, and making memories to last forever.</p>
+          </div>
+        </div>
+
+        <!-- Family Smile -->
+        <div class="polaroid-card rotate-[-2deg] hover:rotate-0">
+          <div class="tape-top"></div>
+          <div class="overflow-hidden rounded-sm bg-rose-50 aspect-[4/3]">
+            <img src="assets/images/family-smile.jpg" alt="Family smile together" class="w-full h-full object-cover zoomable-img transition-transform duration-500 hover:scale-105" data-caption="Pure joy, big smiles, and loved ones.">
+          </div>
+          <div class="mt-4 text-center">
+            <p class="font-script text-2xl text-rose-700">Sweet Loved Ones 🌸</p>
+            <p class="text-xs text-gray-500 font-light mt-1">Warmth, laughter, and the sweetest smiles surrounded by family love.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====================================================
+         CHAPTER 4: INTERACTIVE BIRTHDAY CAKE & CANDLE BLOW
+         ==================================================== -->
+    <section id="birthday-cake" class="py-16 px-4 sm:px-6 bg-gradient-to-b from-rose-50/70 to-pink-50/50">
+      <div class="max-w-2xl mx-auto text-center">
+        
+        <span class="text-rose-500 font-cinzel text-xs uppercase tracking-widest block mb-2 font-bold">Chapter IV</span>
+        <h2 class="font-serif-title text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Make a Birthday Wish!</h2>
+        <p class="text-gray-600 text-sm sm:text-base font-light mb-8">
+          Close your eyes, make your deepest wish, and <strong class="text-rose-600 font-medium">tap the candles</strong> to blow them out! 🎂
+        </p>
+
+        <!-- The Interactive Cake -->
+        <div id="cakeArea" class="cake-wrapper mx-auto py-4">
+          
+          <!-- Candles Row -->
+          <div class="flex items-end justify-center gap-8 mb-[-4px] relative z-20">
+            
+            <!-- Candle 1 -->
+            <div class="flex flex-col items-center">
+              <div class="candle-flame"></div>
+              <div class="w-1.5 h-3 bg-gray-700"></div>
+              <div class="w-4 h-14 bg-gradient-to-b from-amber-200 to-amber-400 rounded-t-sm shadow-sm border-x border-amber-300"></div>
+            </div>
+
+            <!-- Candle 2 (Center) -->
+            <div class="flex flex-col items-center">
+              <div class="candle-flame" style="animation-delay: 0.3s;"></div>
+              <div class="w-1.5 h-3 bg-gray-700"></div>
+              <div class="w-5 h-16 bg-gradient-to-b from-rose-200 to-rose-400 rounded-t-sm shadow-sm border-x border-rose-300"></div>
+            </div>
+
+            <!-- Candle 3 -->
+            <div class="flex flex-col items-center">
+              <div class="candle-flame" style="animation-delay: 0.6s;"></div>
+              <div class="w-1.5 h-3 bg-gray-700"></div>
+              <div class="w-4 h-14 bg-gradient-to-b from-amber-200 to-amber-400 rounded-t-sm shadow-sm border-x border-amber-300"></div>
+            </div>
+
+          </div>
+
+          <!-- Top Tier of Cake -->
+          <div class="w-48 sm:w-56 h-16 bg-gradient-to-r from-pink-200 via-rose-200 to-pink-200 rounded-t-2xl shadow-md border-t-4 border-white relative overflow-hidden flex items-center justify-center">
+            <!-- Decorative Cream Drips -->
+            <div class="absolute top-0 w-full h-4 bg-white/70 rounded-b-xl"></div>
+            <span class="font-script text-xl text-rose-700 z-10">Shakuni</span>
+          </div>
+
+          <!-- Bottom Tier of Cake -->
+          <div class="w-64 sm:w-72 h-20 bg-gradient-to-r from-rose-300 via-pink-300 to-rose-300 rounded-t-2xl shadow-xl border-t-4 border-white relative overflow-hidden flex items-center justify-center">
+            <!-- Decorative Pearls -->
+            <div class="absolute top-0 w-full h-5 bg-white/60 rounded-b-xl flex justify-around items-center px-4">
+              <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+            </div>
+            <span class="font-cinzel text-xs tracking-widest text-rose-900 font-semibold z-10">HAPPY BIRTHDAY</span>
+          </div>
+
+          <!-- Cake Stand Plate -->
+          <div class="w-80 sm:w-96 h-5 bg-gradient-to-r from-amber-100 via-amber-200 to-amber-100 rounded-full shadow-lg border border-amber-300"></div>
+
+        </div>
+
+        <p class="text-xs text-rose-500 font-medium mt-3 animate-pulse">
+          👆 Tap the candles or cake to blow them out!
+        </p>
+
+        <!-- Wish Made Banner (Hidden until blown) -->
+        <div id="wishBanner" class="hidden mt-8 p-6 glass-card rounded-2xl border-2 border-rose-300 max-w-lg mx-auto shadow-2xl">
+          <div class="text-4xl mb-2">🎉🎂✨</div>
+          <h3 class="font-serif-title text-2xl font-bold text-rose-700 mb-2">Wish Made with Love!</h3>
+          <p class="text-gray-700 text-sm sm:text-base leading-relaxed font-light mb-4">
+            May every dream in your heart unfold beautifully, may you stay blessed with happiness, good health, and success, and may all your days be filled with love!
+          </p>
+          <button id="relightBtn" class="px-5 py-2 rounded-full text-xs font-semibold bg-rose-100 text-rose-700 hover:bg-rose-200 transition border border-rose-300 active:scale-95">
+            🔥 Light Candles Again
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====================================================
+         CHAPTER 5: 6 THINGS I ADORE ABOUT YOU (3D FLIP CARDS)
+         ==================================================== -->
+    <section class="py-16 px-4 sm:px-6 max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-rose-500 font-cinzel text-xs uppercase tracking-widest block mb-2 font-bold">Chapter V</span>
+        <h2 class="font-serif-title text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Little Reasons Why I Adore You</h2>
+        <p class="text-gray-600 text-sm sm:text-base font-light">
+          (Tap each card to flip and reveal a secret note 💕)
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        
+        <!-- Card 1 -->
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="text-4xl mb-3">💖</span>
+              <h3 class="font-serif-title text-lg font-bold text-gray-800">Your Radiant Smile</h3>
+              <p class="text-xs text-rose-500 mt-2">Tap to read</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-script text-2xl mb-2">Magical Smile</p>
+              <p class="text-xs sm:text-sm font-light leading-relaxed">It can effortlessly turn my most stressful day into total joy within seconds.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="text-4xl mb-3">🌟</span>
+              <h3 class="font-serif-title text-lg font-bold text-gray-800">Your Caring Heart</h3>
+              <p class="text-xs text-rose-500 mt-2">Tap to read</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-script text-2xl mb-2">Pure Kindness</p>
+              <p class="text-xs sm:text-sm font-light leading-relaxed">How deeply you care for people and the genuine warmth you give so freely.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="text-4xl mb-3">🎓</span>
+              <h3 class="font-serif-title text-lg font-bold text-gray-800">Your Ambition</h3>
+              <p class="text-xs text-rose-500 mt-2">Tap to read</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-script text-2xl mb-2">Smart & Driven</p>
+              <p class="text-xs sm:text-sm font-light leading-relaxed">Your intelligence, work ethic, and determination to achieve big things inspire me daily.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="text-4xl mb-3">😂</span>
+              <h3 class="font-serif-title text-lg font-bold text-gray-800">Our Silly Laughs</h3>
+              <p class="text-xs text-rose-500 mt-2">Tap to read</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-script text-2xl mb-2">Inside Jokes</p>
+              <p class="text-xs sm:text-sm font-light leading-relaxed">The random jokes, giggles, and goofy moments only the two of us understand.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="text-4xl mb-3">🏡</span>
+              <h3 class="font-serif-title text-lg font-bold text-gray-800">Feeling Like Home</h3>
+              <p class="text-xs text-rose-500 mt-2">Tap to read</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-script text-2xl mb-2">My Safe Haven</p>
+              <p class="text-xs sm:text-sm font-light leading-relaxed">Whenever I am with you, I feel peace, happiness, and completely at home.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="text-4xl mb-3">👑</span>
+              <h3 class="font-serif-title text-lg font-bold text-gray-800">Just Being You</h3>
+              <p class="text-xs text-rose-500 mt-2">Tap to read</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-script text-2xl mb-2">One in a Million</p>
+              <p class="text-xs sm:text-sm font-light leading-relaxed">You don't have to try to be special—you just are, exactly the way you are.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====================================================
+         CHAPTER 6: THE WAX-SEALED SECRET LETTER
+         ==================================================== -->
+    <section id="secret-letter" class="py-16 px-4 sm:px-6 bg-rose-50/50 text-center">
+      <div class="max-w-2xl mx-auto">
+        
+        <span class="text-rose-500 font-cinzel text-xs uppercase tracking-widest block mb-2 font-bold">Chapter VI</span>
+        <h2 class="font-serif-title text-3xl sm:text-4xl font-bold text-gray-900 mb-3">A Secret Letter For You</h2>
+        <p class="text-gray-600 text-sm sm:text-base font-light mb-8">
+          Sealed with care. Tap the wax seal to open your private letter...
+        </p>
+
+        <!-- Wax Sealed Envelope Visual -->
+        <div class="envelope-container" id="envelopeVisual">
+          <div class="envelope-base flex items-center justify-center">
+            <!-- Diagonal Flaps Styling -->
+            <div class="absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-100/60"></div>
+            <div class="absolute top-0 left-0 w-full h-24 border-b-2 border-amber-200/60 bg-amber-100/40 transform -skew-y-3 origin-top-left"></div>
+            
+            <!-- Red Wax Seal -->
+            <div class="wax-seal cursor-pointer" id="waxSeal" title="Click to break seal and read letter">
+              <div class="flex flex-col items-center justify-center">
+                <span class="text-xl">💌</span>
+                <span class="font-cinzel text-[10px] tracking-wider uppercase font-bold mt-0.5">OPEN</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-rose-500 font-medium mt-4">
+          👆 Tap the red wax seal to unseal and read
+        </p>
+
+      </div>
+    </section>
+
+
+    <!-- ====================================================
+         CHAPTER 7: CELEBRATION SEND-OFF & REACTIONS
+         ==================================================== -->
+    <section class="py-16 px-4 sm:px-6 max-w-xl mx-auto text-center">
+      <div class="glass-card p-8 rounded-3xl border border-rose-200 shadow-xl">
+        <span class="text-4xl mb-3 block">💐🥂🎉</span>
+        <h3 class="font-serif-title text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+          To An Unforgettable Year Ahead!
+        </h3>
+        <p class="text-gray-600 text-sm sm:text-base leading-relaxed font-light mb-6">
+          May this birthday mark the start of your happiest, healthiest, and most successful chapter yet.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button onclick="sendLoveReaction()" class="w-full sm:w-auto px-6 py-3.5 rounded-full text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 shadow-md shadow-rose-500/30 transition flex items-center justify-center gap-2">
+            <span>💖 Shower with Love & Hearts</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="pt-8 pb-14 text-center text-xs text-gray-500 border-t border-rose-100">
+      <p class="font-serif-title text-base text-gray-700 mb-1">Happy Birthday, Shakuni ❤️</p>
+      <p class="font-light">Coded with infinite love & care by <strong class="font-medium text-rose-600">Rukmal</strong></p>
+      <p class="text-[11px] text-gray-400 mt-2">Forever & Always • 2026</p>
+    </footer>
+
+  </main>
+
+
+  <!-- ====================================================
+       LETTER MODAL (Slides in when seal is tapped)
+       ==================================================== -->
+  <div id="letterModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
+    <div class="relative w-full max-w-xl my-8 letter-paper rounded-2xl p-8 sm:p-12 shadow-2xl text-left border border-amber-200">
+      
+      <!-- Close Button -->
+      <button id="closeLetter" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-700 flex items-center justify-center font-bold text-lg transition active:scale-90" title="Close letter">
+        &times;
+      </button>
+
+      <!-- Letter Header -->
+      <div class="text-center pb-6 mb-6 border-b border-amber-200/80">
+        <span class="font-cinzel text-xs tracking-widest text-amber-800 uppercase font-semibold block mb-1">A Letter From The Heart</span>
+        <h3 class="font-script text-4xl sm:text-5xl text-rose-800">My Dearest Shakuni,</h3>
+      </div>
+
+      <!-- Letter Body Text -->
+      <div class="text-gray-800 text-base sm:text-lg leading-relaxed space-y-4 font-light">
+        <p>
+          From the day you walked into my life, everything became brighter, warmer, and so much more meaningful.
+        </p>
+        <p>
+          Seeing your radiant smile, hearing your sweet laugh, and watching you work tirelessly toward your goals inspire me in ways words can never fully capture. Your intelligence, dedication, and grace leave me in awe every single day.
+        </p>
+        <p>
+          Today is not just about turning a year older—it is about celebrating the rare, brilliant, and wonderful woman you are. Thank you for being my happiness, my safe place, and my favorite person to share every dream with.
+        </p>
+        <p>
+          On this special birthday, I wish you endless happiness, boundless peace, success in everything you reach for, and good health. I promise to always stand by you, cheer for you, and celebrate you.
+        </p>
+      </div>
+
+      <!-- Letter Signoff -->
+      <div class="mt-8 pt-6 border-t border-amber-200/80 text-right">
+        <p class="font-script text-3xl text-rose-700 mb-1">With all my love,</p>
+        <p class="font-serif-title font-bold text-gray-900 text-lg">Rukmal ❤️</p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ====================================================
+       IMAGE LIGHTBOX (Zooms photos when tapped)
+       ==================================================== -->
+  <div id="imageLightbox" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <button id="closeLightbox" class="absolute top-5 right-5 text-white/80 hover:text-white text-3xl font-light w-10 h-10 flex items-center justify-center rounded-full bg-white/10">&times;</button>
+    <div class="max-w-3xl max-h-[85vh] flex flex-col items-center">
+      <img id="lightboxImg" src="" alt="Zoomed view" class="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl">
+      <p id="lightboxCaption" class="text-white/90 font-light text-sm sm:text-base mt-4 text-center max-w-lg font-script text-2xl text-rose-300"></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+</html>

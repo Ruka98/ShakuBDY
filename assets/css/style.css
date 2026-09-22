@@ -1,0 +1,335 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-rose: #f43f5e;
+  --deep-rose: #be123c;
+  --soft-pink: #fff1f2;
+  --gold-accent: #f59e0b;
+  --gold-glow: rgba(245, 158, 11, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  background-color: #fff8f8;
+  color: #33272a;
+}
+
+.font-serif-title {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-script {
+  font-family: 'Dancing Script', cursive;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #ffe4e9;
+}
+::-webkit-scrollbar-thumb {
+  background: #f43f5e;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e11d48;
+}
+
+/* Floating Petals / Hearts Canvas */
+#ambientCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* Romantic Glows & Gradients */
+.bg-rose-radial {
+  background: radial-gradient(circle at 50% 30%, rgba(254, 205, 211, 0.5) 0%, rgba(255, 241, 242, 0) 70%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(254, 205, 211, 0.6);
+  box-shadow: 0 10px 30px -10px rgba(225, 29, 72, 0.12);
+}
+
+.glass-dark {
+  background: rgba(26, 16, 37, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+
+/* Polaroid Card Styles */
+.polaroid-card {
+  background: #ffffff;
+  padding: 14px 14px 22px 14px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  border-radius: 6px;
+}
+
+.polaroid-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 35px rgba(244, 63, 94, 0.2), 0 6px 12px rgba(0, 0, 0, 0.08);
+  z-index: 20;
+}
+
+.tape-top {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 90px;
+  height: 26px;
+  background: rgba(255, 230, 200, 0.7);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-left: 2px dashed rgba(200, 160, 100, 0.4);
+  border-right: 2px dashed rgba(200, 160, 100, 0.4);
+  z-index: 5;
+}
+
+/* 3D Flip Card Styles */
+.flip-card {
+  perspective: 1000px;
+  height: 220px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.flip-card.flipped .flip-card-inner,
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.flip-card-front {
+  background: linear-gradient(135deg, #ffffff 0%, #fff1f2 100%);
+  border: 1px solid #fecdd3;
+  box-shadow: 0 8px 20px rgba(244, 63, 94, 0.08);
+}
+
+.flip-card-back {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+  color: #ffffff;
+  transform: rotateY(180deg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 25px rgba(225, 29, 72, 0.25);
+}
+
+/* Cake & Candle Animation */
+.cake-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.candle-flame {
+  width: 14px;
+  height: 28px;
+  background: linear-gradient(to top, #ff4500, #ffb703, #ffff80);
+  border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+  box-shadow: 0 0 18px 5px rgba(255, 183, 3, 0.85);
+  animation: flicker 1.2s infinite alternate ease-in-out;
+  transform-origin: bottom center;
+}
+
+@keyframes flicker {
+  0% {
+    transform: scale(1) rotate(-1deg);
+    opacity: 0.95;
+    box-shadow: 0 0 14px 4px rgba(255, 183, 3, 0.75);
+  }
+  50% {
+    transform: scale(1.08, 0.96) rotate(2deg);
+    opacity: 1;
+    box-shadow: 0 0 22px 7px rgba(255, 183, 3, 0.95);
+  }
+  100% {
+    transform: scale(0.96, 1.04) rotate(-2deg);
+    opacity: 0.9;
+    box-shadow: 0 0 16px 5px rgba(255, 183, 3, 0.8);
+  }
+}
+
+.candle-flame.blown-out {
+  display: none;
+}
+
+.smoke-puff {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 10px;
+  background: rgba(200, 200, 200, 0.8);
+  border-radius: 50%;
+  animation: smokeRise 1.5s forwards ease-out;
+}
+
+@keyframes smokeRise {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(3.5) translateY(-40px);
+    opacity: 0;
+  }
+}
+
+/* Wax Sealed Envelope Styles */
+.envelope-container {
+  position: relative;
+  width: 320px;
+  max-width: 90vw;
+  height: 220px;
+  margin: 0 auto;
+  perspective: 800px;
+  cursor: pointer;
+}
+
+.envelope-base {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #fcf6e8;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ebd9b8;
+  overflow: hidden;
+}
+
+.wax-seal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 68px;
+  background: radial-gradient(circle at 35% 35%, #e11d48, #9f1239);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(159, 18, 57, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  z-index: 30;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wax-seal:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow: 0 6px 20px rgba(159, 18, 57, 0.8);
+}
+
+/* Letter Content Unfolded */
+.letter-paper {
+  background: #fffdfa url('data:image/svg+xml;utf8,<svg width="100" height="28" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="27" x2="100" y2="27" stroke="%23f3e8d2" stroke-width="1"/></svg>') repeat;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  border: 1px solid #e7d8be;
+}
+
+/* Pulsing Gift Box on Opening Screen */
+@keyframes giftBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+.gift-box-anim {
+  animation: giftBounce 3.2s ease-in-out infinite;
+}
+
+/* Floating Heart Click Effect */
+.floating-click-heart {
+  position: fixed;
+  pointer-events: none;
+  font-size: 24px;
+  user-select: none;
+  z-index: 9999;
+  animation: heartFlyUp 1.2s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes heartFlyUp {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -100px) scale(1.3) rotate(10deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -180px) scale(1.6) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+/* Sound Wave Equalizer Bars */
+.sound-bar {
+  width: 3px;
+  height: 14px;
+  background: #f43f5e;
+  border-radius: 2px;
+  display: inline-block;
+  animation: soundBarAnim 1s ease-in-out infinite alternate;
+}
+.sound-bar:nth-child(2) { animation-delay: 0.2s; height: 18px; }
+.sound-bar:nth-child(3) { animation-delay: 0.4s; height: 12px; }
+.sound-bar:nth-child(4) { animation-delay: 0.15s; height: 16px; }
+
+@keyframes soundBarAnim {
+  0% { height: 4px; }
+  100% { height: 20px; }
+}
+
+.sound-paused .sound-bar {
+  animation: none;
+  height: 4px;
+}
